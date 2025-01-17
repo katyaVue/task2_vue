@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task1</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<style>
+    .plane {
+        width: 350px;
+        height: 250px;
+        position: relative;
+    }
+
+    .ticket {
+        display: flex;
+        align-content: center;
+    }
+    .ticket  h2{
+        margin: 0;
+    }
+    .ticket select {
+        width: 200px;
+        height: 40px;
+        margin-left: 20px;
+        display: block;
+    }
+
+    .plane__bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.5;
+    }
+
+    .plane__bg img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .plane select {
+        width: 200px;
+        height: 40px;
+        margin-left: 20px;
+        display: block;
+    }
+
+    .plane__wrapper {
+        position: relative;
+    }
+</style>
+<body>
+<!--Задача 2. З випадаючого списку вибираємо клас квитка у літаку. Якщо-->
+<!--1) бізнес -  виводимо елементи для вибору газети та коньяку (якщо вибрано коньяк, то запропонувати закуску (так/ні)), на фоні зображення бізнес кают-->
+<!--2) економ – виводимо елементи для вибору типу пива і чипсів, на фоні хмарки.-->
+
+<div id="app">
+    <div class="ticket">
+        <h2> Виберіть клас квитка у літаку</h2>
+        <label>
+            <select type="text" v-model="checkClassPlane">
+                <option value="business">Бізнес клас</option>
+                <option value="econom">Економ клас</option>
+            </select>
+        </label>
+    </div>
+    <hr>
+    <template v-if="isCheckPlane">
+        <div v-if="isClassBusiness" class="plane">
+            <div class="plane__bg">
+                <img :src="photoBusiness" alt="">
+            </div>
+            <div class="plane__wrapper">
+                <h2>Eлементи для вибору бізнес класу</h2>
+                <select type="text" v-model="checkThinksBusiness">
+                    <option value="newspapers">Газети</option>
+                    <option value="cognac">Коньяк</option>
+                </select>
+                <div v-if="checkThinksCognac">
+                    <h2>Бажаєте закуску</h2>
+                    <select>
+                        <option>Так</option>
+                        <option>Ні</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div v-else class="plane">
+            <div class="plane__bg">
+                <img :src="photoEconom" alt="">
+            </div>
+            <div class="plane__wrapper">
+                <h2>Eлементи для вибору економ класу</h2>
+                <select type="text">
+                    <option value="иeer">Пиво</option>
+                    <option value="сhips">Чіпси</option>
+                </select>
+            </div>
+        </div>
+    </template>
+
+
+</div>
+<script>
+    const {createApp} = Vue
+    createApp({
+        data() {
+            return {
+                checkClassPlane: null,
+                checkThinksBusiness: null,
+                photoBusiness: "https://cruise-life.pro/upload/images/blogs/window-cab.jpg",
+                photoEconom: "data:image/jpeg;base64,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"
+            }
+        },
+        computed: {
+            isCheckPlane() {
+                return this.checkClassPlane
+            },
+            checkPlane() {
+                return this.checkClassPlane
+            },
+            isClassBusiness() {
+                return this.checkClassPlane === 'business'
+            },
+            checkThinksCognac() {
+                return this.checkThinksBusiness === 'cognac'
+            }
+        }
+    }).mount('#app')
+</script>
+</body>
+</html>
